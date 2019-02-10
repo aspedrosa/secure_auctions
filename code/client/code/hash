@@ -1,0 +1,9 @@
+from base64 import b64encode
+from cryptography.hazmat.primitives.hashes import SHA256, Hash
+from cryptography.hazmat.backends import default_backend
+
+hashObj = Hash(SHA256(), default_backend())
+
+hashObj.update(bytes(str(data["amount"]), "ascii"))
+
+payload = b64encode(hashObj.finalize()).decode("ascii")

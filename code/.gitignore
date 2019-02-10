@@ -1,0 +1,21 @@
+# python
+__pycache__/
+*.pyc
+
+#vim
+*.swp
+
+#latex
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+*.pdf

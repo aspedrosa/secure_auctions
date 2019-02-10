@@ -1,0 +1,1 @@
+validBid = data["lastAmount"] + 10 < data["amount"]
