@@ -74,7 +74,7 @@ In the first approach, we thought about creating the session on the client side,
   the user had to insert their citizen card (CC) only once. As a matter of fact, as every communication
   needed to authenticate the entities, so, we could achieve this by signing data with the private key
   which implies that for every communication we needed the user to insert the PIN code.\\
-  This was not the best approach as the user needed to insert the PIN code everytime he needed to do some action \textit{e.g. Creating an auction, listing bids, \ldots }
+  This was not the best approach as the user needed to insert the PIN code every time he needed to do some action \textit{e.g. Creating an auction, listing bids, \ldots }
 
 
 \subsection{Servers}
@@ -82,25 +82,25 @@ Both servers possesses a connection endpoint where which clients can exchange re
 a server can be a client of another server. \\
 As expected each server holds some storage, each one containing only the needed information to execute their designed functions.\\
 
-Both servers are running in Docker containers. When it comes to the Auction Manager, it allow to protect us from the impacts of malicious code, restraining the code's acess to the local machine. We decided to Dockerize the Auction Repository as it is a good practice.
+Both servers are running in Docker containers. When it comes to the Auction Manager, it allow to protect us from the impacts of malicious code, restraining the code's access to the local machine. We decided to Dockerize the Auction Repository as it is a good practice.
 
 \subsubsection{PKI}
 As we use hybrid ciphers for entities authentication (\textbf{see section \ref{subsec:handshake}}),
-  we need to have asymmetric keys in every entitie. As mentioned in \ref{subsec:clients}, clients are
+  we need to have asymmetric keys in every entity. As mentioned in \ref{subsec:clients}, clients are
   identified by their CC, but our server don't have nothing to identify them. To solve this problem, we decided to 
   create a set of certificates. \\
 Using the application XCA, we created our own Certification Authority (CA), \textbf{SIO CA}, with two
   end entities where both belongs to the two servers, and had their certificates signed
   by our root CA. The CA's certificate was stored locally in all entities. \\
-Another way that we could have done, was to distribute the servers's certificates, but the
+Another way that we could have done, was to distribute the server's certificates, but the
   way we implemented, new services can be added, signed by the CA, plus we don't need to
   get any certificate as we can validate them anyway.
 From the XCA application we extracted both certificates and server's private key.
   With the private key being encrypted. plus, at the beginning of the main program of each server, a password
   must be inserted to decrypt it, this simulates an administration password.
-Our servers where implemented following a Request Serialization Architecture (RSA), which means
+Our servers where implemented following a Request Serialization Architecture, which means
   when a connection is made to a server from any client it only processes one process at the time. 
-  Every server has a main thread that listens to the connections which everytime a connection is received. it
+  Every server has a main thread that listens to the connections which every time a connection is received. it
   creates a private socket, sends the information to a Worker thread that handles the process and
   communicates with the client.
 
@@ -116,9 +116,9 @@ The former communicates when he wants to:
   \item  a new bid needs to be validated (item \ref{itm:bidvalidation} of section \ref{sec:newBid} )
   \item when an auction ends after the time defined by the creator (section \ref{subsec:auctionTermination}). \\
 \end{itemize}
-The manager holds information which is needed to display to the clientsm, such as the open
+The manager holds information which is needed to display to the clients, such as the open
   auctions that he can close later, as well associated with an auction, the dynamic code
-  to be executed on a bid is validated and the cypher mechanisms to encrypt some fields of
+  to be executed on a bid is validated and the cipher mechanisms to encrypt some fields of
   the bid. \\
 It holds two dictionaries:
 \begin{itemize}
@@ -216,7 +216,7 @@ There are two types of keys, private and public, each one has two types, one for
   \end{itemize} 
 
 In terms of mechanisms for the user, we sign data with PKCS1v15 padding and for the servers, after reading
-  the cryptography package documentation they recomended using PSS padding so we did that.
+  the cryptography package documentation they recommended using PSS padding so we did that.
   As the CC only accepts encryption with SHA1 and SHA256 hash algorithms, we chose  SHA256.
 
 \subsubsection{Symmetric}
@@ -339,17 +339,10 @@ The process of making a new bid is basically inserting a new block on the blockc
       bid's amount. If the type of the auction said that the amount needs to be hidden then just the 
       amount is encrypted. The nonce is always encrypted. \\
       After that comes the bid's validation. This can be achieved by doing through dynamic code. 
-      %TODO explain where and how
-
-
-
-      %is it a function? runs in a docker?
-
 
       If the validation accepts the bid the manager runs the modification code created by the owner 
         of the auctions. This code has as objective to add something more to the block that the auction 
         creator may want to add. This new data will go into the payload field of the block.
-        %TODO explain how and where the codes runs
       After all this, the manager signs the content that he created by doing a hash over the bid (with 
         encrypted fields), the client validation (can be encrypted) and the payload. Finally the manager 
         adds a new field to the blocks data, manager validation, with his certificate and the signature 
@@ -376,7 +369,7 @@ The process of making a new bid is basically inserting a new block on the blockc
       what the client calculated the bid is accepted and adds a new block to the block chain with the 
       information that was hashed (\textit{figure \ref{fig:block}}). Also if the auction has identities publicly 
       available, it inserts the auction's ID to the set of client's participated auctions that made the bid.\\
-      If the new bid was completed successfuly, it returns the receipt of that bid. This receipt serves to prove that
+      If the new bid was completed successfully, it returns the receipt of that bid. This receipt serves to prove that
       the bid was added to the auction. 
 
 \end{enumerate}
@@ -433,7 +426,7 @@ See \textit{figure \ref{fig:auctionCreation}}.
 
 
   \item Instantiation on the repository \\
-    The auction Manager does a syntatic validation and if it is nothing wrong, instantiates a new auction on the auction repository by sending all the 
+    The auction Manager does a syntactic validation and if it is nothing wrong, instantiates a new auction on the auction repository by sending all the 
       information received adding:
     \begin{itemize}
       \item Creator name
@@ -515,7 +508,7 @@ For the first case:
 \end{figure}
 
 For the case where the duration of the auction ends there is a timer thread that is responsible
-  to make the necessary actions to close the auction. As there are multithreading involved
+  to make the necessary actions to close the auction. As there are multi threading involved
   we have a semaphore with starting state of 1 that a thread needs to acquire before doing anything
   on the storage of the repository.
 
@@ -525,7 +518,7 @@ For the case where the duration of the auction ends there is a timer thread that
     \item The manager sends the requested information deleting the information
       of the auction that was closed and removes the auctionId from the list of open auction of the 
       client. \\
-      The repository does the same as described on the step 5 of \textit{igure \ref{fig:auctionTermination}} 
+      The repository does the same as described on the step 5 of \textit{figure \ref{fig:auctionTermination}} 
       except sending of the winner bid to the manager.
 
 \end{enumerate}
